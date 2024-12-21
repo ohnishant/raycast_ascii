@@ -1,0 +1,17 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-c",
+      "-Isrc/include",
+      "-Wall",
+      "-Wextra",
+      "-o",
+      "build/main",
+      "src/main.c"
+    ],
+    "directory": "/home/nish/Projects/raycast_ascii",
+    "file": "/home/nish/Projects/raycast_ascii/src/main.c",
+    "output": "/home/nish/Projects/raycast_ascii/build/main"
+  }
+]
