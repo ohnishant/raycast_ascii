@@ -4,7 +4,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <termio.h>
 #include <termios.h>
 #include <unistd.h>
 
@@ -25,54 +24,7 @@ int map[10][10] = {
     { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
 };
 
-struct GameState {
-    float playerX;
-    float playerY;
-    float deltaX;
-    float deltaY;
-
-    float cameraAngle;
-    int screenRows;
-    int screenCols;
-};
 struct GameState GS = { 0 };
-
-void clearScreen() {
-    write(STDOUT_FILENO, "\x1b[?25l", 6);
-    write(STDOUT_FILENO, "\x1b[H", 3);
-}
-int termReadKey() {
-    int nread;
-    char c;
-    while ((nread = read(STDIN_FILENO, &c, 1)) != 1) {
-        /*if (nread == -1 && errno != EAGAIN)*/
-        /*    die("read");*/
-    }
-    if (c == '\x1b') {
-        char seq[3];
-        if (read(STDIN_FILENO, &seq[0], 1) != 1)
-            return '\x1b';
-        if (read(STDIN_FILENO, &seq[1], 1) != 1) {
-            return '\x1b';
-        }
-
-        /*if (seq[0] == '[') {*/
-        /*    switch (seq[1]) {*/
-        /*    case 'A':*/
-        /*        return KEY_MOVE_UP;*/
-        /*    case 'B':*/
-        /*        return KEY_MOVE_DOWN;*/
-        /*    case 'C':*/
-        /*        return KEY_MOVE_RIGHT;*/
-        /*    case 'D':*/
-        /*        return KEY_MOVE_LEFT;*/
-        /*    }*/
-        /*}*/
-        return '\x1b';
-    } else {
-        return c;
-    }
-}
 
 int getCursorPosition(int* rows, int* cols) {
     char buf[32];
@@ -104,38 +56,6 @@ int getCursorPosition(int* rows, int* cols) {
     return 0;
 }
 
-struct termios original_termios = { 0 };
-
-void disableRawMode() {
-    fprintf(stderr, "[INFO]:\tDisabling Raw Mode\r\n");
-    if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &original_termios) == -1) {
-        /*die("tcsetattr");*/
-    }
-}
-
-void enableRawMode() {
-    fprintf(stderr, "[INFO]:\tEnabling Raw Mode\r\n");
-    if (tcgetattr(STDIN_FILENO, &original_termios) == -1) {
-        /*die("tcgetattr");*/
-    }
-    atexit(disableRawMode);
-
-    struct termios raw = original_termios;
-
-    raw.c_iflag &= ~(BRKINT | INPCK | ISTRIP | ICRNL | IXON);
-    raw.c_oflag &= ~(OPOST);
-    raw.c_cflag |= (CS8);
-    raw.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
-    // 0 characters needed before read() can return
-    raw.c_cc[VMIN] = 0;
-    // 1/10 seconds needed before read() can return
-    raw.c_cc[VTIME] = 1;
-
-    if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw) == -1) {
-        /*die("tcsetattr");*/
-    }
-}
-
 int getScreenSize(int* rows, int* cols) {
     struct winsize ws;
     if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws) == -1 || ws.ws_col == 0) {
@@ -162,29 +82,13 @@ void initGameState(struct GameState* GS) {
     GS->playerY = 86;
 }
 
-void termProcessKeyPress() {
-    char c = termReadKey();
-    switch (c) {
-    case 'q':
-        exit(0);
-    case 'w':
-        GS.playerX = GS.playerX + 0.1;
-        break;
-    case 's':
-        GS.playerX = GS.playerX - 0.1;
-        break;
-    default:
-        return;
-    }
-}
-
-int main() {
+int main(void) {
     initGameState(&GS);
     enableRawMode();
     char posInStr[8];
 
     while (1) {
-        termProcessKeyPress();
+        termProcessKeyPress(&GS);
         strfromf(posInStr, 8, "%f", GS.playerX);
         write(STDOUT_FILENO, "THING RAN\r\n", 11);
         write(STDOUT_FILENO, posInStr, 8);

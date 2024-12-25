@@ -1,17 +1,56 @@
 [
   {
     "arguments": [
-      "/usr/bin/cc",
-      "-c",
-      "-Isrc/include",
+      "/usr/bin/gcc",
       "-Wall",
       "-Wextra",
+      "-pedantic",
+      "-I.",
+      "-Isrc/include",
+      "-Isrc",
+      "-c",
       "-o",
-      "build/main",
+      "build/utils.o",
+      "src/utils.c"
+    ],
+    "directory": "/home/nish/Projects/raycast_ascii",
+    "file": "/home/nish/Projects/raycast_ascii/src/utils.c",
+    "output": "/home/nish/Projects/raycast_ascii/build/utils.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-Wall",
+      "-Wextra",
+      "-pedantic",
+      "-I.",
+      "-Isrc/include",
+      "-Isrc",
+      "-c",
+      "-o",
+      "build/terminal.o",
+      "src/terminal.c"
+    ],
+    "directory": "/home/nish/Projects/raycast_ascii",
+    "file": "/home/nish/Projects/raycast_ascii/src/terminal.c",
+    "output": "/home/nish/Projects/raycast_ascii/build/terminal.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-Wall",
+      "-Wextra",
+      "-pedantic",
+      "-I.",
+      "-Isrc/include",
+      "-Isrc",
+      "-c",
+      "-o",
+      "build/main.o",
       "src/main.c"
     ],
     "directory": "/home/nish/Projects/raycast_ascii",
     "file": "/home/nish/Projects/raycast_ascii/src/main.c",
-    "output": "/home/nish/Projects/raycast_ascii/build/main"
+    "output": "/home/nish/Projects/raycast_ascii/build/main.o"
   }
 ]
