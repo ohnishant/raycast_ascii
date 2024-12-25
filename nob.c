@@ -38,24 +38,6 @@ bool build_object_c(bool force, Nob_Cmd* cmd, const char* source_path, const cha
     return true;
 }
 
-/*bool build_exe(bool force, Nob_Cmd* cmd, const char* source_path, const char* output_path) {*/
-/*    int rebuild_is_needed = nob_needs_rebuild1(output_path, source_path);*/
-/*    if (rebuild_is_needed < 0)*/
-/*        return false;*/
-/**/
-/*    if (force || rebuild_is_needed) {*/
-/*        cmd->count = 0;*/
-/*        cc(cmd);*/
-/*        nob_cmd_append(cmd, "-o", output_path);*/
-/*        nob_cmd_append(cmd, "-c", source_path);*/
-/*        libs(cmd);*/
-/*        return nob_cmd_run_sync(*cmd);*/
-/*    }*/
-/**/
-/*    nob_log(NOB_INFO, "%s is up-to-date", output_path);*/
-/*    return true;*/
-/*}*/
-
 bool build_exe(bool force, bool release_build, Nob_Cmd* cmd, const char* output_path, const char** input_paths, size_t input_paths_count) {
     int rebuild_is_needed = nob_needs_rebuild(output_path, input_paths, input_paths_count);
     if (rebuild_is_needed < 0)
@@ -102,14 +84,6 @@ int main(int argc, char** argv) {
     if (!nob_mkdir_if_not_exists(BUILD_DIR))
         return 1;
 
-    /*nob_cmd_append(&cmd, "gcc",*/
-    /*    "-I.", "-Isrc/include", // INCLUDES*/
-    /*    "-Wextra", "-Wall", "-Werror", "-pedantic", // WARNINGS*/
-    /*    SRC_DIR "/utils.c", SRC_DIR "/terminal.c", SRC_DIR "/main.c", // SOURCES*/
-    /**/
-    /*    "-o",*/
-    /**/
-    /*    BUILD_DIR "/main");*/
     Nob_Cmd cmd = { 0 };
     if (!build_object_c(force_rebuild, &cmd, SRC_DIR "/utils.c", BUILD_DIR "/utils.o"))
         return 1;

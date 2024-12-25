@@ -8,9 +8,13 @@
 #include <unistd.h>
 
 void clearScreen(void);
-int termReadKey(void);
+
 void disableRawMode(void);
 void enableRawMode(void);
+
+int getCursorPosition(int* rows, int* cols);
+int termReadKey(void);
+int getScreenSize(int* rows, int* cols);
 
 void termProcessKeyPress(struct GameState*);
 
